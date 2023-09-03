@@ -6,10 +6,7 @@ import { ContactList } from "./ContactList/ContactList";
 import { StyledDiv } from "App.styled";
 export class App extends Component {
     state = {
-        contacts: [{id: 'id-1', name: 'Rosie Simpson', number: '459-12-56'},
-        {id: 'id-2', name: 'Hermione Kline', number: '443-89-12'},
-        {id: 'id-3', name: 'Eden Clements', number: '645-17-79'},
-        {id: 'id-4', name: 'Annie Copeland', number: '227-91-26'},],
+        contacts: [],
         filter: '',
       }
 
@@ -17,13 +14,17 @@ export class App extends Component {
 onSubmitContact = evt => {
     evt.preventDefault()
     const {contacts} = this.state
-    if (contacts.find(contact => contact.name === evt.target.name.value)) {
-        return alert(`${evt.target.name.value} is already in contacts`);
-    }
-    this.setState(prevState => { 
+    if (contacts.length > 0) {
+        return contacts.find(contact => contact.name.toUpperCase() === evt.target.name.value.toUpperCase()) ? alert(`${evt.target.name.value} is already in contacts`) : this.setState(prevState => { 
 const newObj = {id: nanoid(), name: evt.target.name.value, number: evt.target.querySelector('input[type="tel"]').value}
 return {contacts:[...prevState.contacts, newObj]}   
     })
+    }
+    this.setState(prevState => { 
+        const newObj = {id: nanoid(), name: evt.target.name.value, number: evt.target.querySelector('input[type="tel"]').value}
+        return {contacts:[...prevState.contacts, newObj]}   
+            })
+    
 }
 onChangeInput = evt => {
     this.setState(prevState => {
@@ -32,7 +33,9 @@ onChangeInput = evt => {
 }
 filterByName = () => {
     const {contacts, filter} = this.state
-    return contacts.filter(contact => contact.name.toUpperCase().includes(filter.toUpperCase()))
+    if (contacts.length > 0) {
+    return contacts.filter(contact => contact.name.toUpperCase().includes(filter.toUpperCase()))    
+    }  
 }
 deletingContact = evt => {
     const {contacts} = this.state
@@ -41,6 +44,22 @@ deletingContact = evt => {
     this.setState(prevState => {
      return {contacts:[...newObj]}
     })
+}
+componentDidMount() {
+if(localStorage.getItem("contacts")) {
+    return this.setState(prevState => {
+        const newObj = JSON.parse(localStorage.getItem("contacts"))
+        return {contacts: newObj}
+    })
+}
+}
+componentDidUpdate(prevProps, prevState) {
+    if (prevState.contacts === this.state.contacts) {
+        return
+    }
+    else {
+        localStorage.setItem("contacts", JSON.stringify(this.state.contacts))
+    }
 }
 
 
