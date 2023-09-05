@@ -2,7 +2,6 @@ import PropTypes from "prop-types";
 import { FilteringByNameStyled } from "./ContactList.styled"
 export const ContactList = ({contacts, filter, filtering, deleting}) => {
     const filteringByName = filtering()
-    console.log(contacts);
     return <FilteringByNameStyled>
              
 {contacts.length > 0 ? filter.length > 0 ? filteringByName.map(contact => {

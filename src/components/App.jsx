@@ -15,13 +15,19 @@ onSubmitContact = evt => {
     evt.preventDefault()
     const {contacts} = this.state
     if (contacts.length > 0) {
-        return contacts.find(contact => contact.name.toUpperCase() === evt.target.name.value.toUpperCase()) ? alert(`${evt.target.name.value} is already in contacts`) : this.setState(prevState => { 
+        return contacts.find(contact => contact.name.toUpperCase() === evt.target.name.value.toUpperCase()) 
+        ? alert(`${evt.target.name.value} is already in contacts`) 
+        : this.setState(prevState => { 
 const newObj = {id: nanoid(), name: evt.target.name.value, number: evt.target.querySelector('input[type="tel"]').value}
+evt.target.name.value = ""
+        evt.target.querySelector('input[type="tel"]').value = ""
 return {contacts:[...prevState.contacts, newObj]}   
     })
     }
     this.setState(prevState => { 
         const newObj = {id: nanoid(), name: evt.target.name.value, number: evt.target.querySelector('input[type="tel"]').value}
+        evt.target.name.value = ""
+        evt.target.querySelector('input[type="tel"]').value = ""
         return {contacts:[...prevState.contacts, newObj]}   
             })
     
@@ -40,7 +46,6 @@ filterByName = () => {
 deletingContact = evt => {
     const {contacts} = this.state
     const newObj = contacts.filter(contact => contact.id !== evt.currentTarget.id)
-    console.log(newObj);
     this.setState(prevState => {
      return {contacts:[...newObj]}
     })
